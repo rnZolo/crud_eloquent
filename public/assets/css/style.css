@@ -1,0 +1,13 @@
+input, .add-stud-form select{
+    background-color: whitesmoke;
+}
+label, .add-stud-form select {
+    color: black;
+    font-weight: 500;
+    position: relative;
+}
+.add-stud-form input, .add-stud-form select{
+    width: 100%;
+    border-radius: 5px;
+    text-indent: 10px;
+}
