@@ -12,21 +12,23 @@
 @section('content')
     <div class="w-full h-full px-[5%] py-[100px]">
         <div class="overflow-hidden border-1 border-slate-500 rounded-box  p-3 shadow-md">
-            <div class="commands flex gap-5">
-                <a href="{{ route('student.create') }}" class="btn bg-green-700 hover:bg-green-400  m-2 text-white">
-                  <i class="bi bi-person-fill-add"></i>Add Students
+            <div class="commands flex gap-8">
+                <a href="{{ route('student.create') }}" class="btn bg-green-700 hover:bg-green-400 m-2 text-white i bi-person-fill-add">
+                    Add Students
                 </a>
-                <form action="{{ route('student.index', $request->filter_by ?? '') }}" method="post">
+                <form action="{{ route('student.index', ['student_type' => request()->filter_by]) }}" method="GET" class="flex justify-center items-center min-w-[50px]">
                   @csrf
-                  <label for="filter">Filter By : 
-                    <select name="filter_by" id="filter_by" >
-                        <option value="all" {{ old('student_type') == 'all' ? '' : 'selected'}}></option>
-                        <option value="local_students" 
-                            {{ old('filter_by') == 'local' ? 'selected' : ''}}>Local</option>
-                        <option value="foreign_students" 
-                            {{ old('filter_by') == 'foreign' ? 'selected' : ''}}>Foreign</option>
+                  <label for="filter" class="">Filter By : 
+                    <select name="filter_by" id="filter_by" class="filterby ">
+                        <option value="all" {{ request()->filter_by == 'all' ? '' : 'selected'}}>All</option>
+                        <option value="local_only" 
+                            {{ request()->filter_by == 'local_only' ? 'selected' : ''}}>Local</option>
+                        <option value="foreign_only" 
+                            {{ request()->filter_by == 'foreign_only' ? 'selected' : ''}}>Foreign</option>
                     </select>
-                    <button type="submit">filt</button>
+                    <button type="submit" class="btn bg-green-700 hover:bg-green-400 text-white  ml-4 btn-sm text-[14px] bi bi-funnel-fill">
+                      filter
+                    </button>
                 </form>
               </div>
             <table class="table">
@@ -52,15 +54,15 @@
                 @foreach ($students as $student)
                   <tr class="hover:bg-neutral-700 hover:text-white text-black">
                     <th>{{ $n }}</th>
-                    <td>{{ $student['student_type']}}</td>
-                    <td>{{ $student['id_number']}} </td>
-                    <td>{{ $student['name']}}</td>
-                    <td>{{ $student['age']}}</td>
-                    <td>{{ $student['gender']}}</td>
-                    <td>{{ $student['city']}}</td>
-                    <td>{{ $student['email']}}</td>
-                    <td>{{ $student['mobile_number']}}</td>
-                    <td>{{ $student['grades']}}</td>
+                    <td>{{ ucFirst($student['student_type'])}}</td>
+                    <td>{{ $student['id_number'] }} </td>
+                    <td>{{ $student['name'] }}</td>
+                    <td>{{ $student['age'] }}</td>
+                    <td>{{ $student['gender'] }}</td>
+                    <td>{{ ucFirst($student['city']) }}</td>
+                    <td>{{ $student['email'] }}</td>
+                    <td>{{ $student['mobile_number'] }}</td>
+                    <td>{{ $student['grades'] }}</td>
                     <td class="flex gap-4 p-4 justify-center">
                       <a href="{{ route('student.edit', [ "student_type" => $student['student_type'], "id" => $student['id']])}}" 
                         class="btn bg-blue-700 hover:bg-blue-400 text-white">

@@ -9,7 +9,7 @@
 @section('content')
     <div class="w-full h-full px-[5%] pt-[100px] relative">
         <div class="overflow-hidden border-1 border-slate-500 shadow-lg shadow-black-500 px-[5%] py-[50px]">
-            <form action="{{ route('student.store')  }}" method="post" class="add-stud-form flex flex-col gap-8">
+            <form action="{{ route('student.store')  }}" method="POST" class="add-stud-form flex flex-col gap-8">
                 @csrf
                 <div class="flex w-full gap-8">
                     <div class="flex flex-col max-w-50%[] w-full gap-5">

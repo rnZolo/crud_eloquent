@@ -1,5 +1,7 @@
-input, .add-stud-form select{
-    background-color: whitesmoke;
+input, .add-stud-form select , .filterby, select{
+    background-color: #e5e5e5;
+    border: 1px solid rgb(24, 24, 24);
+    border-radius: 5px;
 }
 label, .add-stud-form select {
     color: black;

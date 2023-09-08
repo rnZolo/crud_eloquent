@@ -20,25 +20,49 @@ class AllStudentController extends Controller
         $this->middleware('auth');
     }
 
-    protected function index(){ 
-        
-        // if($type == "all"){
+    protected function index($student_type = 'all'){ 
+       
+        if($student_type == 'all'){
             $datas = AllStudent::with(['localStudent', 'foreignStudent'])->get()->toArray();
-            $idCount = AllStudent::with(['localStudent', 'foreignStudent'])->get()->max('id_number');
-    
+           
             foreach( $datas as $data ){
                 $students[] = $data['local_student'] ?? $data['foreign_student'];
             }
-
             return view('page.admin.index', compact('students'));
-        // }else if($type == "local_students"){
-        //     return 'local';
-        // }else if($type == "foreig_student"){
-        //     return 'local';
-        // }
+        }
+
+        if($student_type == 'local_only'){
+            $datas = AllStudent::with(['localStudent'])->get()->toArray();
+            // dd($datas);
+            foreach( $datas as $data){
+                //  dd($data);
+                if(!($data['local_student'] == null)){
+                    $students[] = $data['local_student'];
+                }
+
+            }
+            return view('page.admin.index', compact('students'));
+        }
+
+        if($student_type == 'foreign_only'){
+            $datas = AllStudent::with('foreignStudent')->get()->toArray();
+            // dd($datas);
+            foreach( $datas as $data){
+                //  dd($data);
+                if(!($data['foreign_student'] == null)){
+                    $students[] = $data['foreign_student'];
+                }
+
+            }
+
+              return view('page.admin.index', compact('students'));
+        }
+
+      
     }
 
     protected function create(){
+        dd('create');
         $next_id = LocalStudent::max('id_number') > ForeignStudent::max('id_number') ?
         LocalStudent::max('id_number') : ForeignStudent::max('id_number');
        
