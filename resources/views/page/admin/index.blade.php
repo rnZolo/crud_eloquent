@@ -16,7 +16,7 @@
                 <a href="{{ route('student.create') }}" class="btn bg-green-700 hover:bg-green-400 m-2 text-white i bi-person-fill-add">
                     Add Students
                 </a>
-                <form action="{{ route('student.index', ['student_type' => request()->filter_by]) }}" method="GET" class="flex justify-center items-center min-w-[50px]">
+                <form action="{{ route('student.index'),  request()->filter_by }}" method="GET" class="flex justify-center items-center min-w-[50px]">
                   @csrf
                   <label for="filter" class="">Filter By : 
                     <select name="filter_by" id="filter_by" class="filterby ">
@@ -26,6 +26,7 @@
                         <option value="foreign_only" 
                             {{ request()->filter_by == 'foreign_only' ? 'selected' : ''}}>Foreign</option>
                     </select>
+                  </label>
                     <button type="submit" class="btn bg-green-700 hover:bg-green-400 text-white  ml-4 btn-sm text-[14px] bi bi-funnel-fill">
                       filter
                     </button>
