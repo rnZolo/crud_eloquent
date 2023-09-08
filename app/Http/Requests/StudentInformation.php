@@ -3,7 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Rules\ValidName;
+use App\Rules\ValidNumber;
 
 class StudentInformation extends FormRequest
 {
@@ -12,10 +15,10 @@ class StudentInformation extends FormRequest
      *
      * @return bool
      */
-    // public function authorize()
-    // {
-    //     return false;
-    // }
+    public function authorize()
+    {
+        return Auth::check();
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,22 +27,28 @@ class StudentInformation extends FormRequest
      */
     public function rules()
     {
+        // dd(request()->method());
         return [
                 'student_type' => [
                     'bail', 'required', 
                     Rule::in(['local', 'foreign']),
                     ],
-                'id_number' => 'bail|required|numeric|digits_between:1,5|min:1',
-                'name' => 'bail|required|string|max:30|min:2',
-                'age' => 'bail|required|numeric|digits_between:1,3|min:7', 
-                'gender' => [
-                    'bail', 'required', 
+                'id_number' => 
+                        'bail|required|integer|digits_between:1,5|min:1|
+                        unique:App\LocalStudent,id_number|unique:App\ForeignStudent,id_number',
+                'name' => ['bail', 'required', 'string', 'max:30', 'min:2',
+                        new ValidName()    
+                    ],
+                'age' => ['bail','required','numeric','digits_between:1,3','min:7'],
+                'gender' => ['bail', 'required', 
                     Rule::in(['male', 'female']),
                     ],
                 'city' => 'bail|required|string|max:150', 
-                'mobile_number' => 'bail|required|regex:/^63[9]\d{9}$/',
+                'mobile_number' => ['bail', 'required','regex:/^63[9]\d{9}$/',
+                                new ValidNumber()   
+                    ],
                 'email' => 'email:dns', 
-                'grades' => "nullable|bail|numeric|between:75,99|regex:/^\d+(\.\d{1,2})?$/", 
+                'grades' => "nullable|bail|numeric|between:75,100", 
         ];
     }
 }

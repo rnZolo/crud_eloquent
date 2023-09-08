@@ -15,12 +15,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Auth::routes();
 Route::prefix('admin')->group(function(){
+    Route::get('student/{student_type}', 'AllStudentController@index')->name('student.index');
     Route::post('student', 'AllStudentController@store')->name('student.store');
-    Route::get('student/{type?}', 'AllStudentController@index')->name('student.index');
-    Route::get('student/create', 'AllStudentController@create')->name('student.create');
-    Route::get('student/{id}/edit', 'AllStudentController@edit')->name('student.edit');
+    Route::delete('student/{student_type}-{id}', 'AllStudentController@destroy')->name('student.destroy');
     Route::put('student/{id}', 'AllStudentController@update')->name('student.update');
-});
 
+    Route::get('student/create', 'AllStudentController@create')->name('student.create');
+    Route::get('student/{student_type}-{id}/edit', 'AllStudentController@edit')->name('student.edit');
+});
+// {student_type}-{id}
 // Route::resource('sample', 'SampleController');

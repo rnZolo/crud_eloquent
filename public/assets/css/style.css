@@ -11,3 +11,6 @@ label, .add-stud-form select {
     border-radius: 5px;
     text-indent: 10px;
 }
+.btn{
+    border:0;
+}
