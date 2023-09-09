@@ -1,18 +1,32 @@
-input, .add-stud-form select , .filterby, select{
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+body {
+    font-family: 'Nunito', sans-serif;
+}
+
+input,
+.add-stud-form select,
+.filterby,
+select {
     background-color: #e5e5e5;
     border: 1px solid rgb(24, 24, 24);
     border-radius: 5px;
 }
-label, .add-stud-form select {
+
+label,
+.add-stud-form select {
     color: black;
     font-weight: 500;
     position: relative;
 }
-.add-stud-form input, .add-stud-form select{
+
+.add-stud-form input,
+.add-stud-form select {
     width: 100%;
     border-radius: 5px;
     text-indent: 10px;
 }
-.btn{
-    border:0;
+
+.btn {
+    border: 0;
 }

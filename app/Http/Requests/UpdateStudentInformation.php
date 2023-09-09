@@ -53,7 +53,9 @@ class UpdateStudentInformation extends FormRequest
                 Rule::in(['male', 'female']),
                 ],
             'city' => 'bail|required|string|max:150', 
-            'mobile_number' => 'bail|required|regex:/^63[9]\d{9}$/',
+            'mobile_number' => ['bail', 'required','regex:/^63[9]\d{9}$/',
+                            new ValidNumber()   
+                ],
             'email' => 'email:dns', 
             'grades' => "nullable|bail|numeric|between:75,100|regex:/^\d+(\.\d{1,2})?$/", 
         ];

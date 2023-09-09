@@ -30,25 +30,32 @@ class StudentInformation extends FormRequest
         // dd(request()->method());
         return [
                 'student_type' => [
-                    'bail', 'required', 
+                    'bail', 'required',
                     Rule::in(['local', 'foreign']),
                     ],
-                'id_number' => 
+                'id_number' =>
                         'bail|required|integer|digits_between:1,5|min:1|
                         unique:App\LocalStudent,id_number|unique:App\ForeignStudent,id_number',
                 'name' => ['bail', 'required', 'string', 'max:30', 'min:2',
-                        new ValidName()    
+                        new ValidName()
                     ],
                 'age' => ['bail','required','numeric','digits_between:1,3','min:7'],
-                'gender' => ['bail', 'required', 
+                'gender' => ['bail', 'required',
                     Rule::in(['male', 'female']),
                     ],
-                'city' => 'bail|required|string|max:150', 
+                'city' => 'bail|required|string|max:150',
                 'mobile_number' => ['bail', 'required','regex:/^63[9]\d{9}$/',
-                                new ValidNumber()   
+                                new ValidNumber()
                     ],
-                'email' => 'email:dns', 
-                'grades' => "nullable|bail|numeric|between:75,100", 
+                'email' => 'email:dns',
+                'grades' => "nullable|bail|numeric|between:75,99.99|regex:/^[0-9]*(\.[0-9]{0,2})?$/",
+        ];
+    }
+
+    public function messages(){
+        return [
+            'mobile_number.regex'=> 'Mobile number is 11 digits and must start in 639',
+            'grades.regex'=> 'Max decimal is 2',
         ];
     }
 }

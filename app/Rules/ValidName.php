@@ -10,104 +10,61 @@ use Illuminate\Support\Arr;
 
 class ValidName implements Rule
 {
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
+
+    protected $message = 'Name with Phone Number already exist' ;
+    protected $name_local;
+    protected $name_foreign;
+
     public function __construct()
     {
         //
     }
 
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
-     */
     public function passes($attribute, $value)
-    {
-        // dd(getType(request()->method()));
+    {   
+        // check what request method PUT/Update POST/store assign values base from it
         if(request()->method() == 'PUT'){
-            if(LocalStudent::whereRaw('name = ? and not id_number = ?', [$value, request()->old_id_number])->get()->count() == 1){ // same name checking
-                $n_record = LocalStudent::whereRaw('name = ? and not id_number = ?', [$value, request()->old_id_number])->get()->toArray();
-                $n_record = $n_record[0]['mobile_number'];   
-                if(($n_record == request()->mobile_number)){ // should be unique
-                    return false;
-               }
-    
-            }else{ // unique name // same name checking
-                // dd(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count());
-                if(!(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count() <= 1 )){ // not  0 or 1 same number
-                   return false;
-                }
-            }
-     
-            // same name then same number false
-            // unique name verify 0 or 1 same number
-            if(ForeignStudent::whereRaw('name = ? and not id_number = ?', [$value, request()->old_id_number])->get()->count() == 1){ // same name checking
-                $n_record = ForeignStudent::whereRaw('name = ? and not id_number = ?', [$value, request()->old_id_number])->get()->toArray();
-                $n_record = $n_record[0]['mobile_number'];
-                if(($n_record == request()->mobile_number)){ // should be unique
-                    return false;
-               }
-    
-            }else{ // unique name // same name checking
-                // dd(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count());
-                if(!(ForeignStudent::where('mobile_number', request()->mobile_number)->get()->count() <= 1 )){ // not  0 or 1 same number
-                   return false;
-                }
-            }
-            return true;
+            $query_values = [$value, request()->old_id_number];
+            $this->name_local = LocalStudent::whereRaw('name = ? and not id_number = ?',
+                                            $query_values)->get();
+            $this->name_foreign = ForeignStudent::whereRaw('name = ? and not id_number = ?',
+                                            $query_values)->get();
+
+        }else if(request()->method() == 'POST'){
+            $this->name_local = LocalStudent::where('name', $value)->get();
+            $this->name_foreign = ForeignStudent::where('name', $value)->get(); 
+
         }
-        if(request()->method() == 'POST'){
-           
-                // same name then same number false
-                // unique name verify 0 or 1 same number
+            // name exist with the same number
+            if(($count = $this->name_local->count()) >= 1){ // same name checking
+                $valid = $this->checkNumber($this->name_local, request('mobile_number'), $count);
+                if(!$valid) return false;
 
-                if(LocalStudent::where('name', $value)->get()->count() == 1){ // same name checking
-                    $n_record = LocalStudent::where('name', $value)->get()->toArray();
-                    $n_record = $n_record[0]['mobile_number'];
-                    if(($n_record == request()->mobile_number)){ // should be unique
-                        return false;
-                   }
+            }
+            if(($count = $this->name_foreign->count()) >= 1){
+                $valid = $this->checkNumber($this->name_foreign, request('mobile_number'), $count);
+                if(!$valid) return false;
 
-                }else{ // unique name // same name checking
-                    if(!(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count() <= 1 )){ // not  0 or 1 same number
-                        return false;                   
-                    }
-                }
+            }
 
-                // same name then same number false
-                // unique name verify 0 or 1 same number
-                
-                if(ForeignStudent::where('name', $value)->get()->count() == 1){ // double entry // same name checking
-                    $n_record = ForeignStudent::where('name', $value)->get()->toArray();
-                    $n_record = $n_record[0]['mobile_number'];
-                    if(($n_record == request()->mobile_number)){ // should be unique
-                        return false;
-                   }
-                }else{ // unique name // same name checking
-                    if(!(ForeignStudent::where('mobile_number', request()->mobile_number)->get()->count() <= 1 )){ // not  0 or 1 same number
-                        // dd(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count(), 'must unique of same with 1 number');
-                        return false;
-                    }
-                }
-                return true;
-  
-        }
+        return true;
     }
 
+    public function message(){
+        return $this->message;
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'Name with Phone Number already exist';
+    }
+
+    protected function checkNumber(Object $obj, $mobile_number, $count){
+        $valid = true;
+        $record = $obj->toArray(); 
+        for($c = 0; $c < $count; $c++){
+            if($record[$c]['mobile_number'] == $mobile_number){
+                $this->message = 'Name exist with the same Mobile Number';
+                $valid = false;
+            }  
+        }
+
+        return $valid;
     }
 }

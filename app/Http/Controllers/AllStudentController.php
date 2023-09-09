@@ -20,10 +20,12 @@ class AllStudentController extends Controller
         $this->middleware('auth');
     }
 
-    protected function index(){ 
-        // dd(request()->filter_by);
-        request()->filter_by ?? 'all';
-        if(request()->filter_by == 'all'){
+    protected function index(Request $filter_by){ 
+        if($filter_by->filter_by == null){
+            $filter_by->filter_by = 'all';
+        }  
+        // dd( $filter_by->filter_by);
+        if($filter_by->filter_by == 'all'){
             $datas = AllStudent::with(['localStudent', 'foreignStudent'])->get()->toArray();
            
             foreach( $datas as $data ){
@@ -32,7 +34,7 @@ class AllStudentController extends Controller
             return view('page.admin.index', compact('students'));
         }
 
-        if(request()->filter_by == 'local_only'){
+        if($filter_by->filter_by == 'local_only'){
             $datas = AllStudent::with(['localStudent'])->get()->toArray();
             // dd($datas);
             foreach( $datas as $data){
@@ -45,7 +47,7 @@ class AllStudentController extends Controller
             return view('page.admin.index', compact('students'));
         }
 
-        if(request()->filter_by == 'foreign_only'){
+        if($filter_by->filter_by == 'foreign_only'){
             $datas = AllStudent::with('foreignStudent')->get()->toArray();
             // dd($datas);
             foreach( $datas as $data){

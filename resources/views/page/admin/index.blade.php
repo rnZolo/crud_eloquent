@@ -16,10 +16,12 @@
                 <a href="{{ route('student.create') }}" class="btn bg-green-700 hover:bg-green-400 m-2 text-white i bi-person-fill-add">
                     Add Students
                 </a>
-                <form action="{{ route('student.index'),  request()->filter_by }}" method="GET" class="flex justify-center items-center min-w-[50px]">
-                  @csrf
-                  <label for="filter" class="">Filter By : 
-                    <select name="filter_by" id="filter_by" class="filterby ">
+                <form action="{{ route('student.index'), $filter_by ?? '' }}" method="get" 
+                  class="flex justify-center items-center min-w-[50px]">
+                  <!-- @csrf -->
+                  <!-- @method('post') -->
+                  <label for="filter_by" class="">Filter By : 
+                    <select name="filter_by" id="filter_by" class="filterby">
                         <option value="all" {{ request()->filter_by == 'all' ? '' : 'selected'}}>All</option>
                         <option value="local_only" 
                             {{ request()->filter_by == 'local_only' ? 'selected' : ''}}>Local</option>

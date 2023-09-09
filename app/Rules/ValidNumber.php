@@ -3,11 +3,16 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Arr;
 use App\LocalStudent;
 use App\ForeignStudent;
 
 class ValidNumber implements Rule
 {
+    protected $message = 'Mobile Number has been used twice';
+    protected $number_local;
+    protected $number_foreign;
+
     /**
      * Create a new rule instance.
      *
@@ -27,78 +32,43 @@ class ValidNumber implements Rule
      */
     public function passes($attribute, $value)
     {
-        // dd(getType(request()->method()));
         if(request()->method() == 'PUT'){
-            $local = LocalStudent::whereRaw('name = ? and not id_number = ?', [$value, request()->old_id_number])->get();
-            if($local->count() == 1){ // same name checking
-                $n_record = $local->toArray();
-                $n_record = $n_record[0]['mobile_number'];   
-                if(($n_record == request()->mobile_number)){ // should be unique
-                    return false;
-               }
-    
-            }else{ // unique name // same name checking
-                // dd(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count());
-                if(!(LocalStudent::where('name', request()->mobile_number)->get()->count() <= 1 )){ // not  0 or 1 same number
-                    return false;
-                 }
-            }
-     
-            // same name then same number false
-            // unique name verify 0 or 1 same number
-            $foreign = ForeignStudent::whereRaw('id_number = ? and not name  = ?', [request()->old_id_number, $value])->get();
-            if($foreign->count() == 1){ // same name checking
-                $n_record = $foreign->toArray();
-                $n_record = $n_record[0]['name'];
-                if(($n_record == request()->name)){ // should be unique
-                    return false;
-               }
-    
-            }else{ // unique name // same name checking
-                // dd(LocalStudent::where('mobile_number', request()->mobile_number)->get()->count());
-                if(!(ForeignStudent::where('name', request()->mobile_number)->get()->count() <= 1 )){ // not  0 or 1 same number
-                   return false;
-                }
-            }
-            return true;
+            // exclude tha record to be updated then get the result
+            $query_values = [$value, request()->old_id_number];
+
+            $this->number_local = LocalStudent::whereRaw('mobile_number = ? and not id_number = ?',
+                                        $query_values)->get();
+            $this->number_foreign = ForeignStudent::whereRaw('mobile_number = ? and not id_number = ?',
+                                        $query_values)->get();
+
+        }else if(request()->method() == 'POST'){
+            $this->number_local = LocalStudent::where('mobile_number', $value)->get();
+            $this->number_foreign = ForeignStudent::where('mobile_number', $value)->get();
         }
-        if(request()->method() == 'POST'){
-           
-                // same name then same number false
-                // unique name verify 0 or 1 same number
-                
-                if(LocalStudent::where('mobile_number', $value)->get()->count() == 1){ // same number checking
-                    
-                    $n_record = LocalStudent::where('mobile_number', $value)->get()->toArray();
-                    $n_record = $n_record[0]['name'];
-                    if(($n_record == request()->name)){ // should be unique
-                        return false;
-                   }
 
-                }else{ // unique number // same name checking
-                    if(!(LocalStudent::where('name', request()->name)->get()->count() <= 1 )){ // not  0 or 1 same number
-                        return false;                   
-                    }
-                }
-
-                // same name then same number false
-                // unique name verify 0 or 1 same number
-                // dd(LocalStudent::where('mobile_number', $value)->get()->count());
-                if(ForeignStudent::where('mobile_number', $value)->get()->count() == 1){ // same number checking
-                    $n_record = LocalStudent::where('mobile_number', $value)->get()->toArray();
-                    $n_record = $n_record[0]['name'];
-                    if(($n_record == request()->name)){ // should be unique
-                        return false;
-                   }
-
-                }else{ // unique name // same name checking
-                    if(!(ForeignStudent::where('name', request()->name)->get()->count() <= 1 )){ // not  0 or 1 same number
-                        return false;                   
-                    }
-                }
+        // number exist once on both table
+        if($this->number_local->count() > 0  & $this->number_foreign->count() > 0){
+            // $this->message = 'each table has one record';
+            return false;
         }
-            return true;
-  
+        // number exist twice on either of the table
+        if($this->number_local->count() > 1 or $this->number_foreign->count() > 1){
+            // $this->message = 'one of table has 2';
+            return false;
+        }
+        // if number exist once check if same name
+        if($this->number_local->count() == 1){
+            $valid = $this->checkName($this->number_local, request('name'));
+            if(!$valid) return false;
+
+        }
+        if($this->number_foreign->count() == 1){
+            $valid = $this->checkName($this->number_foreign, request('name'));
+            if(!$valid) return false;
+
+        }
+
+        return true;
     }
 
 
@@ -110,6 +80,20 @@ class ValidNumber implements Rule
      */
     public function message()
     {
-        return 'Phone Number has been used';
+        return $this->message;
     }
+
+    protected function checkName(Object $obj, String $name){
+        $valid = true;
+        $record = $obj->toArray(); // [0 => values]
+        $record = Arr::collapse($record); // [values]
+
+        if((($record['name']) == $name)){  // offset error
+            $this->message = 'Mobile Number exist with the same Name';
+            $valid = false;
+        }
+
+        return $valid;
+    }
+
 }
