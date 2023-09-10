@@ -54,7 +54,7 @@ class StudentInformation extends FormRequest
 
     public function messages(){
         return [
-            'mobile_number.regex'=> 'Mobile number is 11 digits and must start in 639',
+            'mobile_number.regex'=> 'Mobile number is 11 digits and must start in 63',
             'grades.regex'=> 'Max decimal is 2',
         ];
     }
