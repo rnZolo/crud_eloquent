@@ -30,3 +30,25 @@ label,
 .btn {
     border: 0;
 }
+
+#app nav,
+#app .card-header {
+    background-color: rgb(67 56 202);
+    color: white;
+}
+
+.form-group button {
+    background-color: rgb(67 56 202);
+    color: white;
+}
+
+.form-group button:hover {
+    background-color: rgb(79 70 229);
+    color: white;
+}
+
+.pass-show {
+    position: absolute;
+    top: 25%;
+    right: 25px;
+}

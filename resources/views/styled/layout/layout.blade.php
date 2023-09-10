@@ -1,17 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @include('inc.link_scripts')
-    @yield('head')
-
+    @yield('links')
+    <style>
+        * {
+            /* outline: 1px dashed red; */
+        }
+    </style>
 </head>
 
-<body class="min-h-screen">
+<body class="w-full min-h-screen bg-neutral-200 relative">
     <div id="app">
-        @yield('notif')
-        @include('layouts.nav')
-        <main class="w-full relative min-h-[90vh] pt-[80px]">
+        @include('layout.nav')
+        <main class="w-full relative min-h-[90vh]">
             @if (request()->is('admin/student/*'))
                 <a href="{{ route('student.index') }}"
                     class="btn bg-green-700 hover:bg-green-400 text-white absolute top-5 left-5 z-10">
@@ -19,9 +22,11 @@
                     Back
                 </a>
             @endif
+            @yield('notif')
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('assets/js/app.js') }}" defer></script>
 </body>
 
 </html>

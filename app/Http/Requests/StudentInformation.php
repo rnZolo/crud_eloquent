@@ -47,13 +47,14 @@ class StudentInformation extends FormRequest
                 'mobile_number' => ['bail', 'required','regex:/^63[9]\d{9}$/',
                                 new ValidNumber()
                     ],
-                'email' => 'email:dns',
+                'email' => 'required|email:dns',
                 'grades' => "nullable|bail|numeric|between:75,99.99|regex:/^[0-9]*(\.[0-9]{0,2})?$/",
         ];
     }
 
     public function messages(){
         return [
+            'age.digits_between'=> 'Age should not have decimals',
             'mobile_number.regex'=> 'Mobile number is 11 digits and must start in 63',
             'grades.regex'=> 'Max decimal is 2',
         ];

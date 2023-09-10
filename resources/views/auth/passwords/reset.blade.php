@@ -1,14 +1,17 @@
-@extends('layout.layout')
-
+@extends('layouts.app')
+@section('head')
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
 @section('content')
-    <div class="w-full h-full grid place-item-center p-[10%]">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card min-w-[300px] max-w-[70%] mx-auto shadow-lg">
-                    <div class="card-header text-2xl text-black font-bold uppercase p-3">{{ __('Reset Password') }}</div>
+                <div class="card">
+                    <div class="card-header">{{ __('Reset Password') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-3">
+                        <form method="POST" action="{{ route('password.update') }}">
                             @csrf
 
                             <input type="hidden" name="token" value="{{ $token }}">

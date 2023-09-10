@@ -1,10 +1,7 @@
-@extends('layouts.app')
-@section('head')
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-@endsection
+@extends('layout.layout')
+
 @section('content')
-    <div class="container">
+    <div class="container w-full h-full grid place-item-center">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
