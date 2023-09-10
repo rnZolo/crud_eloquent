@@ -1,0 +1,5 @@
+# include this to master layout
+@include('sweetalert::alert')
+# run
+php artisan sweetalert:publish
+

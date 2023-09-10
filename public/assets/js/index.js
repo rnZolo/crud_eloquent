@@ -7,3 +7,4 @@ $('.pass-show').click(function (e) {
         $('.pass-log').attr('type', 'password');
     }
 });
+

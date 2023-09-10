@@ -8,8 +8,9 @@
 </head>
 
 <body class="min-h-screen">
+    @include('sweetalert::alert')
     <div id="app">
-        @yield('notif')
+        {{-- @yield('notif') --}}
         @include('layouts.nav')
         <main class="w-full relative min-h-[90vh] pt-[80px]">
             @if (request()->is('admin/student/*'))

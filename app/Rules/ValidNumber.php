@@ -88,7 +88,7 @@ class ValidNumber implements Rule
         $record = $obj->toArray(); // [0 => values]
         $record = Arr::collapse($record); // [values]
 
-        if((($record['name']) == $name)){  // offset error
+        if(strtolower($record['name']) == strtolower($name)){  // offset error
             $this->message = 'Mobile Number exist with the same Name';
             $valid = false;
         }
