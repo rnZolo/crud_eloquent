@@ -23,7 +23,7 @@
                     <div class="flex flex-col max-w-50%[] w-full gap-5">
                         <label for="student_type">Student Type :
                             <select name="student_type" id="student_type"
-                                class="@error('student_type') ring-1 ring-red-500 border-0 @enderror">
+                                class="@error('student_type') ring-2 ring-red-500 border-0 @enderror">
                                 <option value="local" {{ $student['student_type'] == 'local' ? 'selected' : '' }}>Local
                                 </option>
                                 <option value="foreign" {{ $student['student_type'] == 'foreign' ? 'selected' : '' }}>
@@ -64,7 +64,7 @@
                         </label>
                         <label for="gender">Gender :
                             <select name="gender" id="gender"
-                                class="@error('gender') ring-1 ring-red-500 border-0 @enderror">
+                                class="@error('gender') ring-2 ring-red-500 border-0 @enderror">
                                 <option value="male" {{ $student['gender'] == 'male' ? 'selected' : '' }}>Male</option>
                                 <option value="female" {{ $student['gender'] == 'female' ? 'selected' : '' }}>Female
                                 </option>

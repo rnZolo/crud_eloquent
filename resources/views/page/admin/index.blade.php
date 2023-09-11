@@ -43,7 +43,7 @@
                 </form>
             </div>
             <div class="w-full">
-                <table class="table relative">
+                <table class="table relative" id="index_table">
                     <!-- head -->
                     <thead class="bg-neutral-700 text-white">
                         <tr>

@@ -61,8 +61,10 @@ class StudentInformation extends FormRequest
 
     public function messages(){
         return [
+            'id_number.integer' => "ID number shouldn't start with 0",
+            'id_number.digits_between' => 'ID number is 1 - 5 digits only',
             'age.digits_between'=> 'Age should not have decimals',
-            'mobile_number.regex'=> 'Mobile number is 11 digits and must start in 63',
+            'mobile_number.regex'=> 'Mobile number must 11 digits and starts with 63',
             'grades.regex'=> 'Max decimal is 2',
         ];
     }

@@ -36,7 +36,7 @@ class ValidName implements Rule
 
         }
             if(!preg_match('/^[A-Za-z. ]+$/', $value)){
-                $this->message = 'Name should not contain snumbers';
+                $this->message = 'Name should not contain numbers';
                 return false;
             }
             // name exist with the same number
@@ -48,7 +48,6 @@ class ValidName implements Rule
             if(($count = $this->name_foreign->count()) >= 1){
                 $valid = $this->checkNumber($this->name_foreign, request('mobile_number'), $count);
                 if(!$valid) return false;
-
             }
 
         return true;
@@ -60,15 +59,14 @@ class ValidName implements Rule
     }
 
     protected function checkNumber(Object $obj, $mobile_number, $count){
-        $valid = true;
         $record = $obj->toArray();
         for($c = 0; $c < $count; $c++){
             if($record[$c]['mobile_number'] == $mobile_number){
                 $this->message = 'Name exist with the same Mobile Number';
-                $valid = false;
+                return false;
             }
         }
-
-        return $valid;
+        
+        return true;
     }
 }

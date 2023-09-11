@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class LocalStudent extends Model
 {
     protected $table = 'local_students';
+    protected $guarded = ['id'];
     protected $fillable = ['student_type', 'id_number',
                             'name', 'age', 'gender', 'city',
                             'mobile_number', 'email', 'grades'];

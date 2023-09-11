@@ -23,25 +23,25 @@ class AllStudentController extends Controller
     protected $datas;
     protected $method;
 
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('auth');
     }
 
     protected function index(Request $filter_by){
         $filter_by->filter_by == null ?
                 $filter = 'all' : $filter = $filter_by->filter_by;
-        $this->datas = AllStudent::with(['localStudent', 'foreignStudent'])
-                                    ->latest()->get()->toArray();
+
         $students = [];
-        // dd($this->datas);
         if($filter == 'all'){
+            $this->datas = AllStudent::with(['localStudent', 'foreignStudent'])
+                                                    ->latest()->get()->toArray();
             foreach( $this->datas as $data ){
                 $students[] = $data['local_student'] ?? $data['foreign_student'];
             }
         }
 
         if($filter == 'local_only'){
+            $this->datas = AllStudent::with(['localStudent'])->latest()->get()->toArray();
             foreach( $this->datas as $data){
                if(!($data['local_student'] == null)){
                     $students[] = $data['local_student'];
@@ -50,6 +50,7 @@ class AllStudentController extends Controller
         }
 
         if($filter == 'foreign_only'){
+            $this->datas = AllStudent::with(['foreignStudent'])->latest()->get()->toArray();
             foreach( $this->datas as $data){
                 if(!($data['foreign_student'] == null)){
                     $students[] = $data['foreign_student'];
@@ -64,37 +65,43 @@ class AllStudentController extends Controller
     }
 
     protected function create(){
-        $next_id = LocalStudent::max('id_number') > ForeignStudent::max('id_number') ?
-        LocalStudent::max('id_number') : ForeignStudent::max('id_number');
 
-        return view('page.admin.create', compact('next_id'));
+        // $next_id = LocalStudent::max('id_number') > ForeignStudent::max('id_number') ?
+        // LocalStudent::max('id_number') : ForeignStudent::max('id_number');, compact('next_id')
+
+        return view('page.admin.create');
     }
 
     protected function store(StudentInformation $request){
        $this->notif_title = 'Student Succesfully Enrolled';
 
         $request->student_type === "foreign" ?
-                $this->status = $this->saveStudent($request, $student = new ForeignStudent, $request->student_type) :
-                $this->status = $this->saveStudent($request, $student = new LocalStudent, $request->student_type);
+                $this->status = $this->saveStudent($request, new ForeignStudent, $request->student_type) :
+                $this->status = $this->saveStudent($request, new LocalStudent, $request->student_type);
 
         if(!$this->status){
             $this->notif_title = 'Student Failed to Enrolled';
-            $this->notif_status = 'Failed';
+            $this->notif_status = 'error';
         }
 
         toast($this->notif_title, $this->notif_status);
         return back();
     }
 
-    // protected function show(){
-
-    // }
-
     protected function edit($student_type, $id){
         $student;
         $student_type == 'local' ?
-           $student = LocalStudent::findOrFail($id) :
-            $student = ForeignStudent::findOrFail($id);
+           $this->status = $this->notFound(new LocalStudent, $id) :
+            $this->status = $this->notFound(new ForeignStudent, $id);
+
+        if(!$this->status){
+            toast($this->notif_title, $this->notif_status);
+            return back();
+        }
+
+        $student_type == 'local' ?
+           $student = LocalStudent::find($id) :
+            $student = ForeignStudent::find($id);
 
         return view('page.admin.edit', compact('student'));
     }
@@ -105,25 +112,33 @@ class AllStudentController extends Controller
         $info = $request->request;
         $old_student_type = request()->old_student_type;
         $student_type = request()->student_type;
+        $old_student_type == 'local' ? 
+                            $exist = $this->notFound(new LocalStudent, $id) :
+                            $exist = $this->notFound(new ForeignStudent, $id);
+
+        if(!$exist){
+            toast($this->notif_title, $this->notif_status);
+            return back();
+        }
         // switching student type
         if(!($old_student_type == $student_type)){
             // delete the record from the table
-             $this->destroy($old_student_type, $id);
+            $this->$this->destroy($old_student_type, $id);
             // create another record from the other table
             $student_type == 'local' ?
                 $this->status = $this->saveStudent($info, new LocalStudent, $student_type) :
                 $this->status = $this->saveStudent($info, new ForeignStudent, $student_type);
-
-            if(!$this->status){
-                $this->notif_title = 'Student Failed to Update';
-                $this->notif_status = 'Failed';
-            }
 
         }else{
              $student_type == 'local' ?
                     $this->status = $this->updateStudent(new LocalStudent, $id, $info) :
                     $this->status = $this->updateStudent(new ForeignStudent, $id, $info);
 
+        }
+
+        if(!$this->status){
+            $this->notif_title = 'Student Failed to Update';
+            $this->notif_status = 'error';
         }
 
         toast($this->notif_title, $this->notif_status);
@@ -135,32 +150,30 @@ class AllStudentController extends Controller
         if(!$this->method == 'PUT') $this->notif_title = 'Student Record Deleted';
         // check where table to delete
         if($student_type == 'local'){
-            $exist = $this->lookThen(new LocalStudent, $id);
-            $exist ? $this->status = LocalStudent::find($id)->delete():
-                    $this->status = false;
-        }else{
-            $exist = $this->lookThen(new ForeignStudent, $id);
-            $exist ? $this->status = ForeignStudent::find($id)->delete():
-                    $this->status = false;
-        }
+            $exist = $this->notFound(new LocalStudent, $id);
+            if($exist) $this->status = LocalStudent::find($id)->delete();
 
-        if(!$this->status){
-            $this->notif_title = 'Student Not Exist';
-            $this->notif_status = 'Failed';
+        }else{
+            $exist = $this->notFound(new ForeignStudent, $id);
+            if($exist) $this->status = ForeignStudent::find($id)->delete();
+
         }
 
         toast($this->notif_title, $this->notif_status);
         return back();
     }
 
-    protected function lookThen(Model $model, $id){
-        $exist = true;
+    protected function notFound(Model $model, $id){
+
             try{
                 $model::findOrFail($id);
+                // $u = $model::find($id); // working null if not found then work around to handle not found response
             }catch(ModelNotFoundException $er){
-                $exist = false;
+                $this->notif_title = 'Student Record Not Found';
+                $this->notif_status = 'error';
+                return false;
             }
-        return $exist;
+        return true;
     }
 
     protected function saveStudent($request, Model $model, $student_type){

@@ -9,6 +9,7 @@ use App\ForeignStudent;
 class AllStudent extends Model
 {
     protected $table = 'all_students';
+    protected $guarded = ['id'];
     protected $fillable = ['student_type', 'local_student_id',
                             'foreign_student_id'];
 

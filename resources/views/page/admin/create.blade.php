@@ -9,7 +9,7 @@
                     <div class="flex flex-col max-w-50%[] w-full gap-5">
                         <label for="student_type">Student Type :
                             <select name="student_type" id="student_type"
-                                class="@error('student_type') ring-1 ring-red-500 border-0 @enderror">
+                                class="@error('student_type') ring-2 ring-red-500 border-0 @enderror">
                                 <option value="" {{ old('student_type') == null ? '' : 'selected' }}></option>
                                 <option value="local" {{ old('student_type') == 'local' ? 'selected' : '' }}>Local</option>
                                 <option value="foreign" {{ old('student_type') == 'foreign' ? 'selected' : '' }}>Foreign
@@ -23,7 +23,7 @@
                         </label>
                         <label for="id_number">ID Number :
                             <input type="text" name="id_number" id="id_number"
-                                value="{{ old('id_number') ?? $next_id + 1 }}"
+                                value="{{ old('id_number')}}"
                                 class="@error('id_number') border-2 border-red-500 @enderror">
                             @error('id_number')
                                 <span class="text-[13px] m-0 p-0 font-bold text-red-500 absolute -bottom-6 left-0">
@@ -51,7 +51,7 @@
                         </label>
                         <label for="gender">Gender :
                             <select name="gender" id="gender"
-                                class="@error('gender') ring-1 ring-red-500 border-0 @enderror">
+                                class="@error('gender') ring-2 ring-red-500 border-0 @enderror">
                                 <option value="" {{ old('gender') == null ? '' : 'selected' }}></option>
                                 <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
                                 <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
