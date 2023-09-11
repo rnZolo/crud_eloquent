@@ -34,6 +34,7 @@ class AllStudentController extends Controller
         $this->datas = AllStudent::with(['localStudent', 'foreignStudent'])
                                     ->latest()->get()->toArray();
         $students = [];
+        // dd($this->datas);
         if($filter == 'all'){
             foreach( $this->datas as $data ){
                 $students[] = $data['local_student'] ?? $data['foreign_student'];
@@ -98,7 +99,7 @@ class AllStudentController extends Controller
         return view('page.admin.edit', compact('student'));
     }
 
-    protected function update(UpdateStudentInformation $request, $id){
+    protected function update(StudentInformation $request, $id){
         $this->notif_title = 'Student Succesfully Updated';
         $this->method = request()->method();
         $info = $request->request;
@@ -110,8 +111,8 @@ class AllStudentController extends Controller
              $this->destroy($old_student_type, $id);
             // create another record from the other table
             $student_type == 'local' ?
-                $this->status = $this->saveStudent($info, $student = new LocalStudent, $student_type) :
-                $this->status = $this->saveStudent($info, $student = new ForeignStudent, $student_type);
+                $this->status = $this->saveStudent($info, new LocalStudent, $student_type) :
+                $this->status = $this->saveStudent($info, new ForeignStudent, $student_type);
 
             if(!$this->status){
                 $this->notif_title = 'Student Failed to Update';
@@ -130,7 +131,7 @@ class AllStudentController extends Controller
     }
 
     protected function destroy($student_type, $id){
-        // dd($this->method);
+        // need validation due to reuse
         if(!$this->method == 'PUT') $this->notif_title = 'Student Record Deleted';
         // check where table to delete
         if($student_type == 'local'){

@@ -56,7 +56,7 @@ class UpdateStudentInformation extends FormRequest
             'mobile_number' => ['bail', 'required','regex:/^63[9]\d{9}$/',
                             new ValidNumber()
                 ],
-            'email' => 'email:dns',
+            'email' => 'bail|required|email:dns',
             'grades' => "nullable|bail|numeric|between:75,100|regex:/^\d+(\.\d{1,2})?$/",
         ];
     }

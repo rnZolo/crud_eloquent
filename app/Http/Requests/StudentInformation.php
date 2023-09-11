@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Rules\ValidName;
 use App\Rules\ValidNumber;
+use App\LocalStudent;
+use App\ForeignStudent;
 
 class StudentInformation extends FormRequest
 {
@@ -27,15 +29,20 @@ class StudentInformation extends FormRequest
      */
     public function rules()
     {
-        // dd(request()->method());
+        $method = request()->method();
         return [
                 'student_type' => [
                     'bail', 'required',
                     Rule::in(['local', 'foreign']),
                     ],
-                'id_number' =>
-                        'bail|required|integer|digits_between:1,5|min:1|
-                        unique:App\LocalStudent,id_number|unique:App\ForeignStudent,id_number',
+                'id_number' => $method == 'POST' ? 
+                        'bail|required|integer|digits_between:1,5|min:0|
+                        unique:App\LocalStudent,id_number|unique:App\ForeignStudent,id_number' :
+                        [
+                            'required', 'numeric', 'digits_between:1,5', 'min:0',
+                            Rule::unique(LocalStudent::class)->ignore(request()->old_id_number, 'id_number'),
+                            Rule::unique(ForeignStudent::class)->ignore(request()->old_id_number, 'id_number'),
+                    ],
                 'name' => ['bail', 'required', 'string', 'max:30', 'min:2',
                         new ValidName()
                     ],

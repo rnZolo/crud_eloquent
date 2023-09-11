@@ -42,59 +42,62 @@
                     </button>
                 </form>
             </div>
-            <table class="table relative">
-                <!-- head -->
-                <thead class="bg-neutral-700 text-white">
-                    <tr>
-                        <th></th>
-                        <th>Studend Type</th>
-                        <th>ID Number</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>City</th>
-                        <th>Mobile Number</th>
-                        <th>Email</th>
-                        <th>Grades</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                @if (!count($students))
-                    <tbody>
-                        <div class="w-full text-center h-[50px] text-2xl font-bold">NO RECORD </div>
-                    </tbody>
-                @else
-                    <tbody>
-                        @php $n = 1 @endphp
-                        @foreach ($students as $student)
-                            <tr class="hover:bg-neutral-300  text-black">
-                                <th># {{ $n }}</th>
-                                <td>{{ ucFirst($student['student_type']) }}</td>
-                                <td>{{ $student['id_number'] }} </td>
-                                <td>{{ $student['name'] }}</td>
-                                <td>{{ $student['age'] }}</td>
-                                <td>{{ $student['gender'] }}</td>
-                                <td>{{ ucFirst($student['city']) }}</td>
-                                <td>{{ $student['email'] }}</td>
-                                <td>{{ $student['mobile_number'] }}</td>
-                                <td>{{ $student['grades'] }}</td>
-                                <td class="flex gap-4 p-4 justify-center">
-                                    <a href="{{ route('student.edit', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
-                                        class="btn bg-blue-700 hover:bg-blue-400 text-white">
-                                        <i class="bi bi-pencil-fill"></i>
-                                        Edit
-                                    </a>
-                                    <a href="{{ route('student.destroy', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
-                                        class="btn btn-error bg-red-700 text-white" data-confirm-delete="true">
-                                        Delete
-                                    </a>
-                                </td>
-                            </tr>
-                            @php $n++ @endphp
-                        @endforeach
-                    </tbody>
-                @endif
-            </table>
+            <div class="w-full">
+                <table class="table relative">
+                    <!-- head -->
+                    <thead class="bg-neutral-700 text-white">
+                        <tr>
+                            <th></th>
+                            <th>Studend Type</th>
+                            <th>ID Number</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>City</th>
+                            <th>Mobile Number</th>
+                            <th>Email</th>
+                            <th>Grades</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    @if (!count($students))
+                        <tbody>
+                            <div class="w-full text-center h-[50px] text-2xl font-bold">NO RECORD </div>
+                        </tbody>
+                    @else
+                        <tbody>
+                            @php $n = 1 @endphp
+                            @foreach ($students as $student)
+                                <tr class="hover:bg-neutral-300  text-black">
+                                    <th># {{ $n }}</th>
+                                    <td>{{ ucFirst($student['student_type']) }}</td>
+                                    <td>{{ $student['id_number'] }} </td>
+                                    <td>{{ $student['name'] }}</td>
+                                    <td>{{ $student['age'] }}</td>
+                                    <td>{{ $student['gender'] }}</td>
+                                    <td>{{ ucFirst($student['city']) }}</td>
+                                    <td>{{ $student['email'] }}</td>
+                                    <td>{{ $student['mobile_number'] }}</td>
+                                    <td>{{ $student['grades'] }}</td>
+                                    <td class="flex gap-4 p-4 justify-center">
+                                        <a href="{{ route('student.edit', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
+                                            class="btn bg-blue-700 hover:bg-blue-400 text-white">
+                                            <i class="bi bi-pencil-fill"></i>
+                                            Edit
+                                        </a>
+                                        <a href="{{ route('student.destroy', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
+                                            class="btn btn-error bg-red-700 text-white" data-confirm-delete="true">
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                @php $n++ @endphp
+                            @endforeach
+                        </tbody>
+                    @endif
+                </table>
+            </div>
+            
         </div>
     </div>
 @endsection
