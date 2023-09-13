@@ -21,5 +21,14 @@ Route::prefix('admin')->group(function(){
     Route::get('student/{student_type}_{id}/edit', 'AllStudentController@edit')->name('student.edit');
 });
 
+Route::group(['prefix' => 'product/', 'as' => 'item.'], function(){
+    Route::delete('item/{id}/destroy', 'ItemController@destroy')->name('destroy');
+    Route::get('ajx', 'ItemController@ajx')->name('ajx');
+    Route::get('item', 'ItemController@index')->name('index');
+    Route::get('item/{id}/edit', 'ItemController@edit')->name('edit');
+    Route::post('item/store', 'ItemController@store')->name('store');
+});
+
+
 Route::fallback('AllStudentController@index');
 // Route::resource('sample', 'SampleController');

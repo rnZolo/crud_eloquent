@@ -6,3 +6,108 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+.BS-{
+    &container{
+        width: 100%;
+        height: 100%;
+        padding: 0 5%;
+        // display: grid;
+        // place-content: center;
+
+        & #modal-open-btn{
+            position: absolute;
+            top: 25px;
+            right: 50px;
+            margin: 20px 0;
+        }   
+        & .my-modal{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left:0;
+            z-index: 10;
+        }
+    }
+    
+}
+.my-card{
+    width: 500px;
+    height: 500px;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.paginate_button.next, .paginate_button.previous {
+    // background-color: #fff239; /* Change to your desired color */
+    color: black; /* Change to your desired text color */
+    font-weight: 500;
+    padding: 5px;
+    border-radius:  5px;
+
+}
+
+.dataTables_paginate .paginate_button {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 2px;
+    background-color: #007bff; /* Change to your desired button color */
+    color: white;
+    border: 1px solid #007bff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Style the active page number */
+.dataTables_paginate .paginate_button.current {
+    background-color: #555;
+}
+
+/* Style the ellipsis (...) if used */
+.dataTables_paginate .paginate_button.ellipsis {
+    padding: 5px 10px;
+}
+
+/* Style the page number links */
+.dataTables_paginate .paginate_button a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Style the page length dropdown, if used */
+.dataTables_length select {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+/* Style the page length label, if used */
+.dataTables_length label {
+    color: #333;
+    font-weight: bold;
+}
+
+.dataTables_filter input[type="search"] {
+    width: 200px; /* Adjust the width as needed */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+}
+
+/* Style the search input box on focus */
+.dataTables_filter input[type="search"]:focus {
+    outline: none;
+    border-color: #007bff; /* Change to your desired focus color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Change to your desired focus box shadow */
+}

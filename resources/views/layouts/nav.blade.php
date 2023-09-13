@@ -1,8 +1,15 @@
 <nav class="navbar navbar-expand-md text-white shadow-sm overflow-visible">
     <div class="container overflow-visible">
-        <a class="navbar-brand text-white" href="{{ route('student.index') }}">
-            {{ config('app.name', 'Laravel') }}
-        </a>
+        @if (request()->is('admin/student*'))
+                <a class="navbar-brand text-white" href="{{ route('item.index') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+        @else
+            <a class="navbar-brand text-white" href="{{ route('student.index') }}">
+                Product Itemss
+            </a>
+        @endif
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon bi bi-list w-full h-full text-white"></span>

@@ -123,7 +123,7 @@ class AllStudentController extends Controller
         // switching student type
         if(!($old_student_type == $student_type)){
             // delete the record from the table
-            $this->$this->destroy($old_student_type, $id);
+            $this->destroy($old_student_type, $id);
             // create another record from the other table
             $student_type == 'local' ?
                 $this->status = $this->saveStudent($info, new LocalStudent, $student_type) :

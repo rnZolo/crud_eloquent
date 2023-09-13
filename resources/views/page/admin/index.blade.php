@@ -43,7 +43,7 @@
                 </form>
             </div>
             <div class="w-full">
-                <table class="table relative" id="index_table">
+                <table class="table display nowrap" id="index_table" style="width:100%;">
                     <!-- head -->
                     <thead class="bg-neutral-700 text-white">
                         <tr>
@@ -55,7 +55,7 @@
                             <th>Gender</th>
                             <th>City</th>
                             <th>Mobile Number</th>
-                            <th>Email</th>
+                            <th>Email</th>  
                             <th>Grades</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -86,7 +86,7 @@
                                             Edit
                                         </a>
                                         <a href="{{ route('student.destroy', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
-                                            class="btn btn-error bg-red-700 text-white" data-confirm-delete="true">
+                                            class="btn hover:bg-red-800 bg-red-700 text-white" data-confirm-delete="true">
                                             Delete
                                         </a>
                                     </td>
