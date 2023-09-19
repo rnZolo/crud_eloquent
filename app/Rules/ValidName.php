@@ -36,7 +36,7 @@ class ValidName implements Rule
 
         }
             if(!preg_match('/^[A-Za-z. ]+$/', $value)){
-                $this->message = 'Name should not contain numbers';
+                $this->message = 'Name with invalid characters';
                 return false;
             }
             // name exist with the same number

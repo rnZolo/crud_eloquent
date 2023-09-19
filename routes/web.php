@@ -10,14 +10,16 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::redirect('/', 'admin/student', 302);
 Auth::routes();
 Route::prefix('admin')->group(function(){
+    Route::put('student/{id}', 'AllStudentController@update')->name('student.update');
+    Route::delete('student/delete_selected', 'AllStudentController@multiDestroy')->name('student.multi.destroy');
     Route::delete('student/{student_type}_{id}', 'AllStudentController@destroy')->name('student.destroy');
     Route::get('student/create', 'AllStudentController@create')->name('student.create');
+    Route::get('ajax', 'AllStudentController@ajax')->name('student.ajax');
     Route::get('student', 'AllStudentController@index')->name('student.index');
     Route::post('student', 'AllStudentController@store')->name('student.store');
-    Route::put('student/{id}', 'AllStudentController@update')->name('student.update');
     Route::get('student/{student_type}_{id}/edit', 'AllStudentController@edit')->name('student.edit');
 });
 

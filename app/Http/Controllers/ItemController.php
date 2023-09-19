@@ -36,6 +36,7 @@ class ItemController extends Controller
     function ajx(Request $request){
         if($request->ajax()){
             $item = Item::all();
+            // dd($item);
             return datatables()->of($item)->toJson();
         }
     }

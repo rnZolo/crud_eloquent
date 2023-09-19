@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StudentInformation;
 use App\Http\Requests\UpdateStudentInformation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Arr;
@@ -27,19 +28,24 @@ class AllStudentController extends Controller
         $this->middleware('auth');
     }
 
-    protected function index(Request $filter_by){
+    protected function index(){
+        return view('page.admin.index');
+    }
+
+    function ajax(Request $filter_by){
+        
         $filter_by->filter_by == null ?
                 $filter = 'all' : $filter = $filter_by->filter_by;
 
         $students = [];
         if($filter == 'all'){
-            $this->datas = AllStudent::with(['localStudent', 'foreignStudent'])
+            $this->datas = AllStudent::with(['localStudent', 'foreignStudent']) 
                                                     ->latest()->get()->toArray();
             foreach( $this->datas as $data ){
                 $students[] = $data['local_student'] ?? $data['foreign_student'];
             }
         }
-
+       
         if($filter == 'local_only'){
             $this->datas = AllStudent::with(['localStudent'])->latest()->get()->toArray();
             foreach( $this->datas as $data){
@@ -58,68 +64,60 @@ class AllStudentController extends Controller
             }
         }
 
-        $title = 'Delete Student!';
-        $text = "Are you sure you want to delete?";
-        confirmDelete($title, $text);
-        return view('page.admin.index', compact('students'));
+        return datatables()->of($students)->toJson();
     }
 
     protected function create(){
-
-        // $next_id = LocalStudent::max('id_number') > ForeignStudent::max('id_number') ?
-        // LocalStudent::max('id_number') : ForeignStudent::max('id_number');, compact('next_id')
-
         return view('page.admin.create');
     }
-
+    
     protected function store(StudentInformation $request){
-       $this->notif_title = 'Student Succesfully Enrolled';
 
-        $request->student_type === "foreign" ?
+       $request->student_type === "foreign" ?
                 $this->status = $this->saveStudent($request, new ForeignStudent, $request->student_type) :
                 $this->status = $this->saveStudent($request, new LocalStudent, $request->student_type);
 
-        if(!$this->status){
-            $this->notif_title = 'Student Failed to Enrolled';
-            $this->notif_status = 'error';
+        if(!$this->status[0]){
+            return response()->json('Student Failed to Enrolled', 400);
         }
 
-        toast($this->notif_title, $this->notif_status);
-        return back();
+        return response()->json($request, 200);
     }
 
     protected function edit($student_type, $id){
+      
         $student;
         $student_type == 'local' ?
            $this->status = $this->notFound(new LocalStudent, $id) :
             $this->status = $this->notFound(new ForeignStudent, $id);
 
-        if(!$this->status){
-            toast($this->notif_title, $this->notif_status);
-            return back();
+        if(!$this->status[0]){
+            return response()->json(['message' => 'Student not Found'], 400);
+
         }
 
         $student_type == 'local' ?
-           $student = LocalStudent::find($id) :
+            $student = LocalStudent::find($id) :
             $student = ForeignStudent::find($id);
 
-        return view('page.admin.edit', compact('student'));
+        return response()->json($student, 200);
     }
 
     protected function update(StudentInformation $request, $id){
-        $this->notif_title = 'Student Succesfully Updated';
+       
         $this->method = request()->method();
         $info = $request->request;
         $old_student_type = request()->old_student_type;
         $student_type = request()->student_type;
+        
         $old_student_type == 'local' ? 
                             $exist = $this->notFound(new LocalStudent, $id) :
                             $exist = $this->notFound(new ForeignStudent, $id);
 
         if(!$exist){
-            toast($this->notif_title, $this->notif_status);
-            return back();
+            return response()->json('Update Failed, Student not Exist', 400);
         }
+       
         // switching student type
         if(!($old_student_type == $student_type)){
             // delete the record from the table
@@ -133,47 +131,57 @@ class AllStudentController extends Controller
              $student_type == 'local' ?
                     $this->status = $this->updateStudent(new LocalStudent, $id, $info) :
                     $this->status = $this->updateStudent(new ForeignStudent, $id, $info);
-
         }
 
-        if(!$this->status){
-            $this->notif_title = 'Student Failed to Update';
-            $this->notif_status = 'error';
+        if(!$this->status[0]){
+            return response()->json('Failed to Update', 400);
         }
 
-        toast($this->notif_title, $this->notif_status);
-        return redirect()->route('student.index');
+        return response()->json(['message' => 'Student Successfully Updated',
+                                 'status' => 200, 'id' => $this->status[1]]);
     }
 
     protected function destroy($student_type, $id){
-        // need validation due to reuse
-        if(!$this->method == 'PUT') $this->notif_title = 'Student Record Deleted';
+
         // check where table to delete
         if($student_type == 'local'){
             $exist = $this->notFound(new LocalStudent, $id);
-            if($exist) $this->status = LocalStudent::find($id)->delete();
-
+           if ($exist){
+                $this->status = LocalStudent::find($id)->delete();
+            }else{
+                return response()->json('Failed to Delete', 400);
+            }      
         }else{
             $exist = $this->notFound(new ForeignStudent, $id);
-            if($exist) $this->status = ForeignStudent::find($id)->delete();
-
+            if($exist){ 
+                $this->status = ForeignStudent::find($id)->delete();
+            }else{
+                return response()->json('Failed to Delete', 400);
+            }
         }
 
-        toast($this->notif_title, $this->notif_status);
-        return back();
+        if(!$this->method == 'PUT') return response()->json('Succesfully Deleted', 200);
+    }
+
+    protected function multiDestroy(Request $request){
+        $id_numbers = request()->id_numbers;  
+
+        if(!(count($id_numbers) < 1)){
+            LocalStudent::whereIn('id_number',  $id_numbers)->delete();
+            ForeignStudent::whereIn('id_number',  $id_numbers)->delete();
+            return response()->json('Delete success.', 200);
+        }
+        
+        return response()->json('Perform a Single Delete.', 400);
     }
 
     protected function notFound(Model $model, $id){
-
             try{
                 $model::findOrFail($id);
-                // $u = $model::find($id); // working null if not found then work around to handle not found response
             }catch(ModelNotFoundException $er){
-                $this->notif_title = 'Student Record Not Found';
-                $this->notif_status = 'error';
-                return false;
+                return [ false, $id];
             }
-        return true;
+        return [true , $id];
     }
 
     protected function saveStudent($request, Model $model, $student_type){
@@ -188,9 +196,9 @@ class AllStudentController extends Controller
                                     $student->foreign_student_id =  $m->id;
 
         if($student->save()){
-            return true;
+            return [true, $m->id];
         }else{
-            return false;
+            return [false, $m->id];
         }
 
     }
@@ -201,6 +209,6 @@ class AllStudentController extends Controller
         $filtered = Arr::except($collapse, ['_token', '_method', 'old_id_number']);
 
         $status = $model::find($id)->update($filtered);
-        return $status;
+        return [$status, $id];
     }
 }

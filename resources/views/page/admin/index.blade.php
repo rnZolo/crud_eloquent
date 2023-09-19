@@ -16,85 +16,61 @@
             {{ session('status') }}
         </div>
     @endif
-    <div class="w-full h-full px-[5%] pb-[100px]">
+    <div id="whole" class="w-full h-full px-[5%] pb-[100px] relative">
+        <div class="my-modal hide -translate-y-[15%] h-[110vh] absolute z-10 min-w-[100%] top-0 left-0">
+            <form id="store_ajax" class="bg-white w-[80%] p-5 shadow-lg flex flex-col rounded-box relative">
+                    @include('inc.form')
+            </form>
+        </div>
         <div class="overflow-hidden border-1 border-slate-500 rounded-box  p-3 shadow-md">
             <div class="commands flex gap-8">
-                <a href="{{ route('student.create') }}"
-                    class="btn bg-green-700 hover:bg-green-400 m-2 text-white i bi-person-fill-add">
+                <a
+                    class="btn bg-green-700 hover:bg-green-400 m-2 text-white i bi-person-fill-add " id="modal-open-btn">
                     Add Students
                 </a>
-                <form action="{{ route('student.index'), $filter_by ?? '' }}" method="get"
-                    class="flex justify-center items-center min-w-[50px]">
-                    @csrf
-                    @method('post')
-                    <label for="filter_by" class="">Filter By :
+                <form class="flex justify-center items-center min-w-[50px] ">
+                    <label for="filter_by" class="" id="test-btn">Filter By :
                         <select name="filter_by" id="filter_by" class="filterby">
-                            <option value="all" {{ request()->filter_by == 'all' ? '' : 'selected' }}>All</option>
-                            <option value="local_only" {{ request()->filter_by == 'local_only' ? 'selected' : '' }}>Local
-                            </option>
-                            <option value="foreign_only" {{ request()->filter_by == 'foreign_only' ? 'selected' : '' }}>
-                                Foreign</option>
+                            <option value="all">All</option>
+                            <option value="local_only">Local</option>
+                            <option value="foreign_only">Foreign</option>
                         </select>
                     </label>
-                    <button type="submit"
-                        class="btn bg-green-700 hover:bg-green-400 text-white  ml-4 btn-sm text-[14px] bi bi-funnel-fill">
-                        filter
-                    </button>
                 </form>
+                <label for="select_all" class="ml-auto flex justify-center items-center">Select All: <span  id="select_all" class="ml-5"></span></label>
+                <button class=" bg-red-700 hover:bg-red-800 text-white p-2 bi bi-trash3-fill flex justify-center items-center " 
+                id="multi_del" disabled >Mulitple Delete</button>
             </div>
             <div class="w-full">
                 <table class="table display nowrap" id="index_table" style="width:100%;">
                     <!-- head -->
                     <thead class="bg-neutral-700 text-white">
                         <tr>
+                            {{-- <th></th> --}}
                             <th></th>
-                            <th>Studend Type</th>
-                            <th>ID Number</th>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Gender</th>
-                            <th>City</th>
-                            <th>Mobile Number</th>
-                            <th>Email</th>  
-                            <th>Grades</th>
-                            <th class="text-center">Actions</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>  
+                            <th></th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
-                    @if (!count($students))
+                            {{-- <td></td> --}}
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         <tbody>
-                            <div class="w-full text-center h-[50px] text-2xl font-bold">NO RECORD </div>
-                        </tbody>
-                    @else
-                        <tbody>
-                            @php $n = 1 @endphp
-                            @foreach ($students as $student)
-                                <tr class="hover:bg-neutral-300  text-black">
-                                    <th># {{ $n }}</th>
-                                    <td>{{ ucFirst($student['student_type']) }}</td>
-                                    <td>{{ $student['id_number'] }} </td>
-                                    <td>{{ $student['name'] }}</td>
-                                    <td>{{ $student['age'] }}</td>
-                                    <td>{{ $student['gender'] }}</td>
-                                    <td>{{ ucFirst($student['city']) }}</td>
-                                    <td>{{ $student['email'] }}</td>
-                                    <td>{{ $student['mobile_number'] }}</td>
-                                    <td>{{ $student['grades'] }}</td>
-                                    <td class="flex gap-4 p-4 justify-center">
-                                        <a href="{{ route('student.edit', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
-                                            class="btn bg-blue-700 hover:bg-blue-400 text-white">
-                                            <i class="bi bi-pencil-fill"></i>
-                                            Edit
-                                        </a>
-                                        <a href="{{ route('student.destroy', ['student_type' => $student['student_type'], 'id' => $student['id']]) }}"
-                                            class="btn hover:bg-red-800 bg-red-700 text-white" data-confirm-delete="true">
-                                            Delete
-                                        </a>
-                                    </td>
-                                </tr>
-                                @php $n++ @endphp
-                            @endforeach
-                        </tbody>
-                    @endif
                 </table>
             </div>
             

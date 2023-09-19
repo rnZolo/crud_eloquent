@@ -83,7 +83,7 @@ class ValidNumber implements Rule
         return $this->message;
     }
 
-    protected function checkName(Object $obj, String $name){
+    protected function checkName(Object $obj, $name){
         $valid = true;
         $record = $obj->toArray(); // [0 => values]
         $record = Arr::collapse($record); // [values]

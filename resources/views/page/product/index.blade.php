@@ -6,7 +6,6 @@
 @endsection
 
 @section('content') 
-    {{ $req ?? '' }}
     <div class="BS-container">
         <span class="btn bg-green-700 hover:bg-green-400 text-white" id="modal-open-btn">Add Item</span>
         <div class="my-modal hide -translate-y-[80px] h-[110vh] ">

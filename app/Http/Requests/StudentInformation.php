@@ -46,7 +46,7 @@ class StudentInformation extends FormRequest
                 'name' => ['bail', 'required', 'string', 'max:30', 'min:2',
                         new ValidName()
                     ],
-                'age' => ['bail','required','numeric','digits_between:1,3','min:7'],
+                'age' => ['bail','required','numeric','min:7', 'max:150'],
                 'gender' => ['bail', 'required',
                     Rule::in(['male', 'female']),
                     ],
@@ -63,8 +63,7 @@ class StudentInformation extends FormRequest
         return [
             'id_number.integer' => "ID number shouldn't start with 0",
             'id_number.digits_between' => 'ID number is 1 - 5 digits only',
-            'age.digits_between'=> 'Age should not have decimals',
-            'mobile_number.regex'=> 'Mobile number must 11 digits and starts with 63',
+            'mobile_number.regex'=> 'Mobile number must start with 63 and 12 digits',
             'grades.regex'=> 'Max decimal is 2',
         ];
     }

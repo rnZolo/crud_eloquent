@@ -1,11 +1,11 @@
 <nav class="navbar navbar-expand-md text-white shadow-sm overflow-visible">
     <div class="container overflow-visible">
         @if (request()->is('admin/student*'))
-                <a class="navbar-brand text-white" href="{{ route('item.index') }}">
+                <a class="navbar-brand text-white mr-auto" href="{{ route('item.index') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
         @else
-            <a class="navbar-brand text-white" href="{{ route('student.index') }}">
+            <a class="navbar-brand text-white w-[70%]" href="{{ route('student.index') }}">
                 Product Itemss
             </a>
         @endif
@@ -15,44 +15,32 @@
             <span class="navbar-toggler-icon bi bi-list w-full h-full text-white"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav mr-auto">
+       
 
-            </ul>
 
-            <!-- Right Side Of Navbar -->
-            <ul class="navbar-nav overflow-visible">
-                <!-- Authentication Links -->
                 @guest
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('login') }}">{{ __('Login') }}</a>
-                    </li>
+                        <a class=" text-white" href="{{ route('login') }}">{{ __('Login') }}</a>
                     @if (Route::has('register'))
-                        <li class="nav-item ">
-                            <a class="nav-link text-white" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
+                            <a class="text-white" href="{{ route('register') }}">{{ __('Register') }}</a>
                     @endif
                 @else
-                    <li class="flex gap-4 overflow-visible">
-                        <span class="my-auto text-center">
-                            {{ ucfirst(Auth::user()->name) }} :
+                        <span class="text-center mr-4 flex-end">
+                            {{-- {{ ucfirst(Auth::user()->name) }} :  --}}
                         </span>
+                            <a class="flex-end" href="{{ route('logout') }}"
+                               onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                                {{ __('Logout') }}
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                 
 
-                        <a class="hover:text-white" href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
-                                            document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
-
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-
-                    </li>
+                 
                 @endguest
-            </ul>
-        </div>
+           
+       
     </div>
 </nav>
 

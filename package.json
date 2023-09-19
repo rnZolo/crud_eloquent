@@ -25,8 +25,11 @@
     },
     "dependencies": {
         "datatables": "^1.10.18",
+        "datatables.net": "^1.13.6",
         "datatables.net-dt": "^1.13.6",
         "datatables.net-responsive-dt": "^2.5.0",
+        "datatables.net-select": "^1.7.0",
+        "sweetalert2": "^11.7.27",
         "toastify-js": "^1.12.0"
     }
 }
